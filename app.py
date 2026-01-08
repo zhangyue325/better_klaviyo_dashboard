@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import datetime
-from data_sources import load_dashboard_data
 from streamlit_gsheets import GSheetsConnection
+from data_sources import load_dashboard_data
+from ai_agent import ask_gemini
 
 
 st.set_page_config(
@@ -227,7 +228,8 @@ if "group" in dimensions and "campaign_id" in dimensions:
     if st.button("Save Group", type="primary"):
         edited_data = edited_data[['campaign_id', 'group']]
         conn.update(worksheet="Sheet1", data = edited_data)
-        st.write('group saved')
+        st.success('Group Changes Saved Success!', icon="✅")
+
     st.write("You can modify the Klaviyo campaigns's group by editing the `group` in the table above☝️")
     st.write("Click this button after you have edited the `group`")
 if "group" in dimensions and "campaign_id" not in dimensions:
@@ -236,8 +238,30 @@ if "group" in dimensions and "campaign_id" not in dimensions:
 else:
     pass
 
-prompt = st.chat_input("Ask anything about Klaviyo...")
-if prompt:
-    st.write(f"AI agent for Klaviyo will come soon...")
 
-    
+# ---------------- Sidebar AI Chatbot (Responsive) ----------------
+with st.sidebar:
+    st.markdown("## 🤖 Klaviyo AI")
+    st.caption("Ask questions about the current dashboard data.")
+    st.divider()
+
+    if "ai_chat" not in st.session_state:
+        st.session_state.ai_chat = [
+            {"role": "assistant", "content": "Hi! Ask me anything about this dashboard."}
+        ]
+
+    # Conversation 
+    for m in st.session_state.ai_chat:
+        with st.chat_message(m["role"]):
+            st.write(m["content"])
+
+    # Input 
+    prompt = st.chat_input("Ask anything...", key="sidebar_chat_input")
+    if prompt:
+        st.session_state.ai_chat.append({"role": "user", "content": prompt})
+
+        with st.spinner("Thinking..."):
+            reply = ask_gemini(prompt)
+
+        st.session_state.ai_chat.append({"role": "assistant", "content": reply})
+        st.rerun()
