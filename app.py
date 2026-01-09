@@ -9,7 +9,7 @@ from ai_agent import ask_gemini
 
 st.set_page_config(
     page_title="Klaviyo Pulse",
-    page_icon="🏴",
+    page_icon="favicon.png",
     layout="wide",
 )
 st.logo('logo.png')
