@@ -28,11 +28,11 @@ CHART_CATEGORY_COLORS = [
 ]
 
 BENCHMARKS = {
-    "open_rate": 0.432,           
-    "click_rate": 0.0125,         
-    "bounce_rate": 0.00631,       
-    "spam_complaint_rate": 0.0000787,  
-    "unsubscribe_rate": 0.00285, 
+    "open_rate": 0.49,           
+    "click_rate": 0.00537,         
+    "bounce_rate": 0.0042,       
+    "spam_complaint_rate": 0.0000635,  
+    "unsubscribe_rate": 0.00218, 
 }
 
 RATE_METRICS = {
